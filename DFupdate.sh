@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -u
 DFOfficialURL="http://www.bay12games.com/dwarves/"
-DFDirectory='/home/eldios/Giochi/DF'
+DFDirectory="$(pwd)"
 DFFinalDir="$DFDirectory/df_linux"
 if [[ ! -w "$DFDirectory" ]]
 then
@@ -16,6 +16,7 @@ then
 fi
 oldVersionDir="$DFDirectory/$oldVersion"
 
+echo 'Fetching Latest Remote version Info...'
 latestRemoteArchive="$(curl -ks $DFOfficialURL | gawk 'match($0, /\W(df_.*linux.tar.bz2)\W/, res) {print res[1]}')"
 latestLocalDir="$(echo $latestRemoteArchive | sed 's/^\(.*\)\.tar\.bz2$/\1/i')"
 if [[ "$oldVersion" == "$latestLocalDir" ]]
@@ -31,14 +32,17 @@ fi
 
 latestLocalArchive="$DFDirectory/""$latestRemoteArchive"
 latestRemoteURL="$DFOfficialURL""$latestRemoteArchive"
+echo "Downloading latest archive..."
 curl -kq "$latestRemoteURL" > "$latestLocalArchive"
 
 mkdir "$latestLocalDir"
-tar -xjf "$latestLocalArchive"
+echo "Extracting latest archive..."
+tar -qxjf "$latestLocalArchive"
 
 DFLatestExec="$DFFinalDir/df"
 if [[ -x $DFLatestExec ]] 
 then
+  echo "Cleaning old stuff..."
   echo "$latestLocalDir" > "$oldVersionFile"
   rmdir "$latestLocalDir" 
 fi
