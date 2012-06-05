@@ -1,14 +1,28 @@
 #!/usr/bin/env bash
 set -u
+scriptVersion="0.0.3"
+# DF standard stuff
 DFOfficialURL="http://www.bay12games.com/dwarves/"
 DFDirectory="$(pwd)"
 DFFinalDir="$DFDirectory/df_linux"
+# oldVersion management
+oldVersionFile="$DFDirectory/latestVersion"
 if [[ ! -w "$DFDirectory" ]]
 then
   echo "S'rry m'lord, path $DFDirectory is sturdy.. can't dig or write there"
   exit 1
 fi 
-oldVersionFile="$DFDirectory/latestVersion"
+echo "I'll put latest DF version in $DFFinalDir..."
+echo "I'll also create $oldVersionFile file to manage version update" 
+echo "If that's not dwarfy enough for you, run this script *inside your target chosen directory*"
+echo -n "Wanna continue? (y/n) "
+read choice
+if [[ $choice != "Y" && $choice != "y" ]]
+then 
+  echo "As you wish, mast'r. Nothin' creat'd."
+  exit 0
+fi
+
 oldVersion=''
 if [[ -r "$oldVersionFile" ]]
 then
